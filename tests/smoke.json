@@ -1,0 +1,8 @@
+{
+  "wikisource-ru": {
+    "search": ["Война и мир", 1],
+    "book": "Герой нашего времени (Лермонтов)",
+    "expectLicense": "public-domain",
+    "minChapters": 5
+  }
+}

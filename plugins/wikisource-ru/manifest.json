@@ -1,0 +1,17 @@
+{
+  "id": "wikisource-ru",
+  "name": "Викитека",
+  "version": "1.0.0",
+  "api": 1,
+  "lang": "ru",
+  "site": "https://ru.wikisource.org",
+  "domains": ["ru.wikisource.org"],
+  "icon": "icons/wikisource-ru.png",
+  "content": ["text"],
+  "features": ["popular", "search", "byUrl"],
+  "nsfw": false,
+  "studio": "public",
+  "browser": "never",
+  "rateLimit": { "rps": 0.2, "burst": 1 },
+  "login": null
+}

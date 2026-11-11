@@ -1,0 +1,10 @@
+node_modules/
+dist/
+site/
+tests/out/
+*.log
+.venv/
+venv/
+# signing keys never go to git
+*.key
+*.pem

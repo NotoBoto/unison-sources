@@ -1,0 +1,23 @@
+{
+  "name": "unison-sources",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Book source plugins for Unison (JS, quickjs-ng 0.12.1)",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "node scripts/build.mjs",
+    "test": "node tests/unit.mjs && node tests/golden.mjs",
+    "golden": "node tests/golden.mjs",
+    "golden:update": "node tests/golden.mjs --update",
+    "record": "node scripts/record.mjs",
+    "smoke": "node scripts/smoke.mjs"
+  },
+  "devDependencies": {
+    "@jitl/quickjs-ng-wasmfile-release-sync": "0.32.0",
+    "esbuild": "0.28.2",
+    "htmlparser2": "12.0.0",
+    "quickjs-emscripten-core": "0.32.0",
+    "typescript": "5.9.3"
+  }
+}

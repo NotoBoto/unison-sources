@@ -1,0 +1,28 @@
+name: Engine parity (Android)
+# The same golden tests on bare quickjs-ng 0.12.1 inside an Android emulator (§4, §6).
+# Weekly, and by hand whenever the engine version changes.
+on:
+  schedule: [{ cron: "0 4 * * 1" }]
+  workflow_dispatch:
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with: { repository: quickjs-ng/quickjs, ref: v0.12.1, path: qjs-ng }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm
+      - uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          target: google_apis
+          ndk: 27.2.12479018
+          script: node tests/golden.mjs --android emulator-5554 --ndk "$ANDROID_SDK_ROOT/ndk/27.2.12479018" --qjs-src "$GITHUB_WORKSPACE/qjs-ng"
