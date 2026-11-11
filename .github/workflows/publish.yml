@@ -22,14 +22,21 @@ jobs:
         with: { node-version: 22, cache: npm }
       - run: npm ci
       - run: node tests/unit.mjs && node tests/golden.mjs
-      - name: Build and sign
-        env:
-          UNISON_SIGNING_KEY: ${{ secrets.UNISON_SIGNING_KEY }}
+      # An unsigned index is never published: without the key the job only warns.
+      - id: key
+        env: { UNISON_SIGNING_KEY: "${{ secrets.UNISON_SIGNING_KEY }}" }
         run: |
-          test -n "$UNISON_SIGNING_KEY" || { echo "secret UNISON_SIGNING_KEY is not set"; exit 1; }
+          if [ -n "$UNISON_SIGNING_KEY" ]; then echo "ok=true" >> "$GITHUB_OUTPUT"
+          else echo "::warning::secret UNISON_SIGNING_KEY is not set, nothing is published"; echo "ok=false" >> "$GITHUB_OUTPUT"; fi
+      - name: Build and sign
+        if: steps.key.outputs.ok == 'true'
+        env: { UNISON_SIGNING_KEY: "${{ secrets.UNISON_SIGNING_KEY }}" }
+        run: |
           node scripts/build.mjs
           test -s site/index.json.sig
-      - uses: actions/upload-pages-artifact@v3
+      - if: steps.key.outputs.ok == 'true'
+        uses: actions/upload-pages-artifact@v3
         with: { path: site }
       - id: deploy
+        if: steps.key.outputs.ok == 'true'
         uses: actions/deploy-pages@v4
