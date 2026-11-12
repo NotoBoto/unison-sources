@@ -10,10 +10,11 @@ import { signIndex } from "./sign.mjs";
 
 export const ENGINE = "qjs-ng-0.12.1";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const PROJECT = process.env.UNISON_PROJECT ? path.resolve(process.env.UNISON_PROJECT) : ROOT;   // plugins, cases, site (unison-sources-extra)
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
 const REPO = { id: arg("--repo", "unison-sources"), name: arg("--name", "Unison: источники") };
 const ONLY = arg("--plugins", "");
-const OUT = path.join(ROOT, "site");
+const OUT = path.join(PROJECT, "site");
 
 const coreVersion = /CORE_VERSION\s*=\s*"([^"]+)"/.exec(fs.readFileSync(path.join(ROOT, "lib/core/version.ts"), "utf8"))[1];
 
@@ -36,11 +37,11 @@ export async function buildAll({ out = OUT, quiet = false } = {}) {
   fs.rmSync(out, { recursive: true, force: true });
   fs.mkdirSync(path.join(out, "dist"), { recursive: true });
   fs.mkdirSync(path.join(out, "icons"), { recursive: true });
-  const dirs = fs.readdirSync(path.join(ROOT, "plugins")).filter((d) => fs.existsSync(path.join(ROOT, "plugins", d, "index.ts")))
+  const dirs = fs.readdirSync(path.join(PROJECT, "plugins")).filter((d) => fs.existsSync(path.join(PROJECT, "plugins", d, "index.ts")))
     .filter((d) => !ONLY || ONLY.split(",").includes(d)).sort();
   const plugins = [];
   for (const dir of dirs) {
-    const src = path.join(ROOT, "plugins", dir);
+    const src = path.join(PROJECT, "plugins", dir);
     const m = JSON.parse(fs.readFileSync(path.join(src, "manifest.json"), "utf8"));
     validate(m, dir);
     const file = `dist/${m.id}.js`;

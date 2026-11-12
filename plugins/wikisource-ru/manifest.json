@@ -1,7 +1,7 @@
 {
   "id": "wikisource-ru",
   "name": "Викитека",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "api": 1,
   "lang": "ru",
   "site": "https://ru.wikisource.org",

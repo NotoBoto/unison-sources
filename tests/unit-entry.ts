@@ -1,5 +1,5 @@
 // Bundled by tests/unit.mjs and run inside quickjs-ng and V8: returns computed values as JSON.
-import { crypto, chapterHash, parseUrl, queryParams, query, resolveUrl, hostAllowed, normalizeText, parseChapterHtml } from "../lib/core";
+import { crypto, chapterHash, parseUrl, queryParams, query, resolveUrl, hostAllowed, normalizeText, parseChapterHtml, prosemirrorToHtml } from "../lib/core";
 
 const INPUTS = ["", "abc", "Привет, мир!", "😀 emoji ✓", "x".repeat(1000), "граница блока 55 байт: 0123456789012345678901", "a".repeat(64), "b".repeat(119)];
 
@@ -21,4 +21,12 @@ const INPUTS = ["", "abc", "Привет, мир!", "😀 emoji ✓", "x".repeat
     `<p>- Ты слышишь?</p><img src="/i/a.jpg" width="400" height="300"><p style="display:none">скрыто</p>` +
     `<h2>Примечания</h2><p>сноска</p></div>`,
     { lang: "ru", root: { class: "x" }, stopHeading: /^Примечания/, baseUrl: "https://ru.wikisource.org/wiki/X" }),
+  pm: prosemirrorToHtml({ type: "doc", content: [
+    { type: "paragraph", attrs: { textAlign: "center" }, content: [{ type: "text", marks: [{ type: "bold" }], text: "Арка <первая> & вторая" }] },
+    { type: "horizontalRule" },
+    { type: "paragraph", content: [{ type: "text", text: "- Ранг <S>," }, { type: "hardBreak" }, { type: "text", marks: [{ type: "italic" }], text: "сказал он." }] },
+    { type: "image", attrs: { images: [{ image: "a1" }] } },
+    { type: "mystery", content: [{ type: "paragraph", content: [{ type: "text", text: "внутри" }] }] },
+    { type: "emptyThing" },
+  ] }, (n) => ((n.attrs as any).images as { image: string }[]).map((x) => ({ src: "https://ranobelib.me/u/" + x.image + ".jpg", w: 800 }))),
 });

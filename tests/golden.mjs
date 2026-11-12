@@ -12,6 +12,7 @@ import { buildAll } from "../scripts/build.mjs";
 import { runQjs, runV8 } from "./hosts/node_qjs.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const PROJECT = process.env.UNISON_PROJECT ? path.resolve(process.env.UNISON_PROJECT) : ROOT;   // plugins, cases, site (unison-sources-extra)
 const args = process.argv.slice(2);
 const flag = (k) => args.includes(k);
 const opt = (k) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : undefined; };
@@ -20,16 +21,16 @@ const PYTHON = opt("--python");
 const ANDROID = opt("--android");          // adb serial
 const NDK = opt("--ndk") || process.env.ANDROID_NDK_HOME;
 const QJS_SRC = opt("--qjs-src") || process.env.QJS_NG_SRC;   // quickjs-ng v0.12.1 sources for the Android host
-const OUT = path.join(ROOT, "tests/out");
+const OUT = path.join(PROJECT, "tests/out");
 
 const { out: site } = await buildAll({ out: path.join(OUT, "site"), quiet: true });
 const driverPath = path.join(ROOT, "tests/driver.js");
 const driver = fs.readFileSync(driverPath, "utf8");
 
 const cases = [];
-for (const plugin of fs.readdirSync(path.join(ROOT, "tests/cases"))) {
-  for (const f of fs.readdirSync(path.join(ROOT, "tests/cases", plugin)).filter((f) => f.endsWith(".json")).sort()) {
-    cases.push({ plugin, name: f.replace(/\.json$/, ""), file: path.join(ROOT, "tests/cases", plugin, f) });
+for (const plugin of fs.readdirSync(path.join(PROJECT, "tests/cases"))) {
+  for (const f of fs.readdirSync(path.join(PROJECT, "tests/cases", plugin)).filter((f) => f.endsWith(".json")).sort()) {
+    cases.push({ plugin, name: f.replace(/\.json$/, ""), file: path.join(PROJECT, "tests/cases", plugin, f) });
   }
 }
 
@@ -53,7 +54,7 @@ for (const c of cases) {
   const parsed = JSON.parse(outputs.qjs);
   if (parsed.missing.length) { console.log(`✗ ${label}: fixtures missing for ${parsed.missing.length} request(s):\n  ${parsed.missing.join("\n  ")}`); failed++; continue; }
   const errs = parsed.results.filter((r) => r.result.err && !(r.expectError));
-  const expFile = path.join(ROOT, "tests/expected", c.plugin, c.name + ".json");
+  const expFile = path.join(PROJECT, "tests/expected", c.plugin, c.name + ".json");
   if (UPDATE) {
     fs.mkdirSync(path.dirname(expFile), { recursive: true });
     fs.writeFileSync(expFile, outputs.qjs);

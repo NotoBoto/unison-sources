@@ -8,7 +8,8 @@ import { buildAll } from "./build.mjs";
 import { runLive } from "./record.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const plan = JSON.parse(fs.readFileSync(path.join(ROOT, "tests/smoke.json"), "utf8"));
+const PROJECT = process.env.UNISON_PROJECT ? path.resolve(process.env.UNISON_PROJECT) : ROOT;   // plugins, cases, site (unison-sources-extra)
+const plan = JSON.parse(fs.readFileSync(path.join(PROJECT, "tests/smoke.json"), "utf8"));
 const only = process.argv.slice(2);
 await buildAll({ quiet: true });
 
@@ -32,7 +33,7 @@ for (const [id, p] of Object.entries(plan)) {
   else console.log(`  ✓ ${search.ok?.items.length} results, ${chapters.ok.length} chapters, first chapter ${ch.result.ok.paras?.length ?? "audio"} paragraphs`);
 }
 if (problems.length) {
-  fs.mkdirSync(path.join(ROOT, "tests/out"), { recursive: true });
-  fs.writeFileSync(path.join(ROOT, "tests/out/smoke-report.md"), "Nightly smoke test found problems:\n\n" + problems.map((p) => "- " + p).join("\n") + "\n");
+  fs.mkdirSync(path.join(PROJECT, "tests/out"), { recursive: true });
+  fs.writeFileSync(path.join(PROJECT, "tests/out/smoke-report.md"), "Nightly smoke test found problems:\n\n" + problems.map((p) => "- " + p).join("\n") + "\n");
 }
 process.exit(problems.length ? 1 : 0);

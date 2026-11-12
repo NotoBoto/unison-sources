@@ -4,6 +4,8 @@ export { parseChapterHtml, normalizeText, normalizeSpaces, normalizeRu, normaliz
 export type { ParseOptions } from "./html";
 export { parseUrl, queryParams, query, resolveUrl, hostAllowed } from "./url";
 export { crypto } from "./crypto";
+export { prosemirrorToHtml, isPmDoc, escapeHtml } from "./prosemirror";
+export type { PmNode, PmImage } from "./prosemirror";
 
 import { hex, sha1 } from "./crypto";
 

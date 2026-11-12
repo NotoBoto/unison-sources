@@ -43,6 +43,9 @@ check("parseChapterHtml", () => assert.deepEqual(o.html, {
   paras: ["Утро было тихим. Туман.", "— Ты слышишь?"],
   images: [{ after: 1, src: "https://ru.wikisource.org/i/a.jpg", w: 400, h: 300 }],
 }));
+check("prosemirrorToHtml", () => assert.equal(o.pm,
+  `<p><b>Арка &lt;первая&gt; &amp; вторая</b></p><hr><p>- Ранг &lt;S&gt;,<br><i>сказал он.</i></p>` +
+  `<img src="https://ranobelib.me/u/a1.jpg" width="800"><div><p>внутри</p></div>`));
 
 console.log(failures ? `\n${failures} unit test(s) failed` : "\nall unit tests passed");
 process.exit(failures ? 1 : 0);

@@ -9,11 +9,12 @@ import vm from "node:vm";
 import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const PROJECT = process.env.UNISON_PROJECT ? path.resolve(process.env.UNISON_PROJECT) : ROOT;   // plugins, cases, site (unison-sources-extra)
 export const USER_AGENT = "UnisonSources/0.1 (https://github.com/NotoBoto/unison)";
 
 /** Runs calls against the live site; returns {results, fixtures}. */
 export async function runLive(pluginId, calls, { log = console.log } = {}) {
-  const bundle = fs.readFileSync(path.join(ROOT, "site/dist", pluginId + ".js"), "utf8");
+  const bundle = fs.readFileSync(path.join(PROJECT, "site/dist", pluginId + ".js"), "utf8");
   const fixtures = {};
   const store = {};
   let last = 0;
@@ -74,9 +75,9 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   const calls = JSON.parse(callsJson);
   const { results, fixtures } = await runLive(pluginId, calls);
   for (const r of results) if (r.result.err) console.warn(`! ${r.fn}: ${JSON.stringify(r.result.err)}`);
-  const dir = path.join(ROOT, "tests/cases", pluginId);
+  const dir = path.join(PROJECT, "tests/cases", pluginId);
   fs.mkdirSync(dir, { recursive: true });
   const file = path.join(dir, name + ".json");
   fs.writeFileSync(file, JSON.stringify({ plugin: pluginId, recorded: new Date().toISOString().replace(/\.\d+Z$/, "Z"), calls, fixtures }, null, 1) + "\n");
-  console.log(`saved ${path.relative(ROOT, file)} (${Object.keys(fixtures).length} responses)`);
+  console.log(`saved ${path.relative(PROJECT, file)} (${Object.keys(fixtures).length} responses)`);
 }
