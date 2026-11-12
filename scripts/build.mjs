@@ -47,7 +47,8 @@ export async function buildAll({ out = OUT, quiet = false } = {}) {
     const file = `dist/${m.id}.js`;
     const res = await build({
       entryPoints: [path.join(src, "index.ts")], bundle: true, format: "iife", target: "es2020", platform: "neutral",
-      mainFields: ["module", "main"], charset: "utf8", legalComments: "none", minify: false, write: false,
+      mainFields: ["module", "main"], nodePaths: [path.join(ROOT, "node_modules")],   // plugins of unison-sources-extra use our packages
+      charset: "utf8", legalComments: "none", minify: false, write: false,
       banner: { js: `/* ${m.id} ${m.version} · api ${m.api} · ${ENGINE} · core ${coreVersion} */` },
       logLevel: "warning",
     });

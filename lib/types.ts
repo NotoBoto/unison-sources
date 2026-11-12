@@ -79,5 +79,10 @@ export type ErrorCode =
 
 export interface PluginError { code: ErrorCode; message: string; url?: string }
 
-export interface FetchInit { method?: string; headers?: Record<string, string>; body?: string }
+export interface FetchInit {
+  method?: string; headers?: Record<string, string>; body?: string;
+  /** Response headers the plugin needs besides content-type and retry-after (lower case), e.g. ["reader-secret"].
+   *  Hosts may return more; golden fixtures keep exactly these. Cookies are never returned. */
+  responseHeaders?: string[];
+}
 export interface FetchResponse { status: number; headers: Record<string, string>; text: string; url: string }

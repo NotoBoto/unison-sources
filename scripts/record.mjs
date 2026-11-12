@@ -40,7 +40,7 @@ export async function runLive(pluginId, calls, { log = console.log } = {}) {
       const r = await fetch(url, { method: init?.method || "GET", headers: { "User-Agent": USER_AGENT, ...(init?.headers || {}) }, body: init?.body });
       const text = await r.text();
       const headers = {};
-      for (const k of ["content-type", "retry-after"]) if (r.headers.get(k)) headers[k] = r.headers.get(k);
+      for (const k of ["content-type", "retry-after", ...(init?.responseHeaders || []).map((h) => h.toLowerCase())]) if (r.headers.get(k)) headers[k] = r.headers.get(k);
       fixtures[url] = { status: r.status, headers, text };
       return [true, { status: r.status, headers, text, url }];
     }

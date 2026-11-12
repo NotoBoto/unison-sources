@@ -17,7 +17,7 @@ const problems = [];
 for (const [id, p] of Object.entries(plan)) {
   if (only.length && !only.includes(id)) continue;
   console.log(`== ${id}`);
-  const calls = [{ fn: "search", args: p.search }, { fn: "details", args: [p.book] }, { fn: "chapters", args: [p.book] }];
+  const calls = [{ fn: p.searchFn || "search", args: p.search }, { fn: "details", args: [p.book] }, { fn: "chapters", args: [p.book] }];
   const { results } = await runLive(id, calls, { log: () => {} });
   const [search, details, chapters] = results.map((r) => r.result);
   const bad = (what) => { problems.push(`${id}: ${what}`); console.log("  ✗ " + what); };
