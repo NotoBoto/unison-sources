@@ -2,6 +2,8 @@
 
 Плагины-источники книг для [Unison](https://github.com/NotoBoto/unison): один JS-файл на источник, одинаково работающий в приложении Android, в Unison Studio и в тестах. Дизайн — `SOURCES_DESIGN.md` в репозитории Unison (§4–§7, §19).
 
+Встроенный репозиторий приложения: `https://notoboto.github.io/unison-sources/` (Викитека). Дополнительные источники (RanobeLib, Author.Today) — в [unison-sources-extra](https://github.com/NotoBoto/unison-sources-extra).
+
 Контент сайтов принадлежит правообладателям. Плагины предназначены только для личного использования.
 
 ## Устройство
