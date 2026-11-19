@@ -176,7 +176,11 @@ function chapterTitle(chapterId: string): string {
   if (!chapterId.includes("/")) return splitTitle(chapterId).title;
   const last = lastSegment(chapterId);
   // no \b here: JS \b is ASCII-only and never matches next to Cyrillic letters
-  const isEdition = /^(Вариант|Редакция)(?=\s|$)|^\d{4}(?=\s|$).*\((СО|ДО)\)$|^(СО|ДО)$/.test(last) && chapterId.split("/").length === 2;
+  // editions are named like "Вариант …", "Редакция …", "СО", "1938 (СО)", "ПСС 1975", "Собрание сочинений 1900"
+  const isEdition = chapterId.split("/").length === 2 && (
+    /^(Вариант|Редакция)(?=\s|$)|^(СО|ДО)$|\((СО|ДО)\)$/.test(last) ||
+    /(^|[\s(])(ПСС|ССС|СС|ПСЗ)(?=[\s)]|$)|собрани[ея]|издани[ея]/i.test(last) ||
+    /(^|[\s(—–-])(1[6-9]\d\d|20\d\d)(?=[\s)—–-]|$)/.test(last));
   return isEdition ? splitTitle(chapterId.split("/")[0]).title : splitTitle(last).title;
 }
 
